@@ -8,8 +8,14 @@ YEARLY = 12000
 
 
 def main():
+    part_a()
     part_c()
     part_d()
+
+
+def part_a():
+    balance = run_through(1000, num_years=2, q=0)
+    print('%f should be approximately %f' % (balance, 1000 * 1.05 * 1.05))
 
 
 def part_c():
@@ -34,15 +40,15 @@ def part_d():
     print(best_i)
 
 
-def rate(balance):
-    return INTEREST * balance - YEARLY
+def rate(balance, q=YEARLY):
+    return INTEREST * balance - q
 
 
-def run_through(init_balance, num_years=20.0, step=0.01):
+def run_through(init_balance, num_years=20.0, step=0.01, q=YEARLY):
     t = 0.0
     balance = init_balance
     while t < num_years:
-        balance += rate(balance) * step
+        balance += rate(balance, q=q) * step
         t += step
     return balance
 
