@@ -2,6 +2,8 @@
 Numerical methods for solving diff eqs.
 """
 
+from scipy.integrate import odeint
+
 
 def euler_step(f, x0, y0, h):
     """
@@ -72,11 +74,14 @@ def third_order_step(f, x0, y0, h):
     Returns:
         A tuple (x1, y1).
     """
+    a = 1.0 / 4.0
+    b = 3.0 / 4.0
+    c = 2.0 / 3.0
     slope1 = f(x0, y0)
-    slope2 = f(x0 + 1.0 / 3.0 * h, y0 + 1.0 / 3.0 * h * slope1)
+    slope2 = f(x0 + c * h, y0 + c * h * slope1)
     slope3 = (slope1 + slope2) / 2
-    slope4 = f(x0 + 1.0 / 3.0 * h, y0 + 1.0 / 3.0 * h * slope3)
-    return x0 + h, y0 + h * (-0.5 * slope1 + 3.0 / 2.0 * slope4)
+    slope4 = f(x0 + c * h, y0 + c * h * slope3)
+    return x0 + h, y0 + h * (a * slope1 + b * slope4)
 
 
 def numerical_solve(f, x0, y0, x1, h=0.01, step_fn=rk3_step):
