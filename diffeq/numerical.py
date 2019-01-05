@@ -2,8 +2,6 @@
 Numerical methods for solving diff eqs.
 """
 
-from scipy.integrate import odeint
-
 
 def euler_step(f, x0, y0, h):
     """
@@ -65,6 +63,8 @@ def third_order_step(f, x0, y0, h):
     """
     Perform a step of a third-order method I invented.
 
+    See derivations/third_order.jpg.
+
     Args:
         f: the slope as a function of x, y.
         x0: the start x.
@@ -77,10 +77,15 @@ def third_order_step(f, x0, y0, h):
     a = 1.0 / 4.0
     b = 3.0 / 4.0
     c = 2.0 / 3.0
+    # Get the exact initial slope.
     slope1 = f(x0, y0)
+    # Use RK2 to get f(ch) + O(h^3)
     slope2 = f(x0 + c * h, y0 + c * h * slope1)
     slope3 = (slope1 + slope2) / 2
+    # Get the slope at (ch, f(ch) + O(h^3)),
+    # which is f'(ch) + O(h^3).
     slope4 = f(x0 + c * h, y0 + c * h * slope3)
+    # Compute f(h) + O(h^4).
     return x0 + h, y0 + h * (a * slope1 + b * slope4)
 
 
