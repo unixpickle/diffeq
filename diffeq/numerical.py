@@ -59,6 +59,26 @@ def rk3_step(f, x0, y0, h):
     return x0 + h, y0 + h * (k1 + 4 * k2 + k3) / 6.0
 
 
+def third_order_step(f, x0, y0, h):
+    """
+    Perform a step of a third-order method I invented.
+
+    Args:
+        f: the slope as a function of x, y.
+        x0: the start x.
+        y0: the start y.
+        h: the step size.
+
+    Returns:
+        A tuple (x1, y1).
+    """
+    slope1 = f(x0, y0)
+    slope2 = f(x0 + 1.0 / 3.0 * h, y0 + 1.0 / 3.0 * h * slope1)
+    slope3 = (slope1 + slope2) / 2
+    slope4 = f(x0 + 1.0 / 3.0 * h, y0 + 1.0 / 3.0 * h * slope3)
+    return x0 + h, y0 + h * (-0.5 * slope1 + 3.0 / 2.0 * slope4)
+
+
 def numerical_solve(f, x0, y0, x1, h=0.01, step_fn=rk3_step):
     """
     Numerically solve a differential equation.
