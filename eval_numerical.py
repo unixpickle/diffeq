@@ -18,8 +18,8 @@ def evaluate_steps():
         print('Equation %d:' % i)
         solution = odeint(fn, 0, [1, 2], tfirst=True)[-1][0]
         for name, step_fn in step_fns.items():
-            solution1 = last(numerical_solve(fn, 1, 0, 2, h=0.02, step_fn=step_fn))[1]
-            solution2 = last(numerical_solve(fn, 1, 0, 2, h=0.01, step_fn=step_fn))[1]
+            solution1 = last(numerical_solve(fn, 1, 0, 2, h=0.1, step_fn=step_fn))[1]
+            solution2 = last(numerical_solve(fn, 1, 0, 2, h=0.05, step_fn=step_fn))[1]
             error1 = abs(solution - solution1)
             error2 = abs(solution - solution2)
             print(' - %s: halving factor %f' % (name, error1 / error2))
