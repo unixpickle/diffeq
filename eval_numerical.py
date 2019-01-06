@@ -5,6 +5,7 @@ different numerical methods of solving diff eqs.
 
 import math
 
+import numpy as np
 from scipy.integrate import odeint
 
 from diffeq.numerical import (euler_step, rk2_step, rk3_step, third_order_step, fourth_order_step,
@@ -25,6 +26,8 @@ def main():
     evaluate_steps()
     print('Evaluating full solutions...')
     evaluate_solutions()
+    print('Evaluating 3D rk2...')
+    evaluate_3d_rk2()
 
 
 def evaluate_steps():
@@ -56,6 +59,26 @@ def evaluate_solutions():
             error1 = abs(solution - solution1)
             error2 = abs(solution - solution2)
             print(' - %s: halving factor %f (error=%e)' % (name, error1 / error2, error2))
+
+
+def evaluate_3d_rk2():
+    def fn(var, t):
+        x, y, z = var[0], var[1], var[2]
+        return np.array([x**2 - z, y**2 + x - z**2 + 1, y + x ** 2])
+
+    def mv_rk2(step_size):
+        x = np.array([0, 0, 0], dtype=np.float64)
+        for i in range(round(1 / step_size)):
+            t = i * step_size
+            dx = fn(x, t)
+            dx1 = fn(x + step_size * dx, t + step_size)
+            x = x + step_size * (dx + dx1) / 2
+        return x
+
+    soln = odeint(fn, [0, 0, 0], [0.0, 1.0])[-1]
+    error1 = np.sum(np.abs(mv_rk2(0.01) - soln))
+    error2 = np.sum(np.abs(mv_rk2(0.005) - soln))
+    print(' - Halving factor: %f' % (error1 / error2))
 
 
 def last(iterator):
