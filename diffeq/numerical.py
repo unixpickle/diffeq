@@ -89,6 +89,56 @@ def third_order_step(f, x0, y0, h):
     return x0 + h, y0 + h * (a * slope1 + b * slope4)
 
 
+def fourth_order_step(f, x0, y0, h):
+    """
+    Perform a step of a fourth-order method I invented.
+
+    See derivations/fourth_order_*.jpg.
+
+    Args:
+        f: the slope as a function of x, y.
+        x0: the start x.
+        y0: the start y.
+        h: the step size.
+
+    Returns:
+        A tuple (x1, y1).
+    """
+    third_a = 1.0 / 4.0
+    third_b = 3.0 / 4.0
+    third_c = 2.0 / 3.0
+
+    fourth_a = 1.0 / 10.0
+    fourth_b = 2.0 / 5.0
+    fourth_c = 1.0 / 2.0
+    fourth_d = 1.0 / 3.0
+    fourth_e = 5.0 / 6.0
+
+    # Get information needed for RK2.
+    slope1 = f(x0, y0)
+    # slope2 = f(x0 + h, y0 + h * slope1)
+
+    def second_order(step):
+        slope2 = f(x0 + h * step, y0 + h * slope1 * step)
+        slope = (slope1 + slope2) / 2
+        return f(x0 + h * step, y0 + h * step * slope)
+        # Old method
+        # b = (step ** 2) / 2.0
+        # a = step - b
+        # slope = a * slope1 + b * slope2
+        # return f(x0 + h * step, y0 + h * step * slope)
+
+    def third_order(step):
+        sub_step = third_c * step
+        tmp_slope = second_order(sub_step)
+        return f(x0 + h * step, y0 + h * step * (third_a * slope1 + third_b * tmp_slope))
+
+    df_eh = third_order(fourth_e)
+    df_dh = third_order(fourth_d)
+
+    return x0 + h, y0 + h * (fourth_a * slope1 + fourth_b * df_eh + fourth_c * df_dh)
+
+
 def numerical_solve(f, x0, y0, x1, h=0.01, step_fn=rk3_step):
     """
     Numerically solve a differential equation.
