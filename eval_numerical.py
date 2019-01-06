@@ -1,3 +1,8 @@
+"""
+Empirically evaluate the asymptotic error behavior of
+different numerical methods of solving diff eqs.
+"""
+
 import math
 
 from scipy.integrate import odeint
