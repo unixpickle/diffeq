@@ -116,17 +116,13 @@ def fourth_order_step(f, x0, y0, h):
 
     # Get information needed for RK2.
     slope1 = f(x0, y0)
-    # slope2 = f(x0 + h, y0 + h * slope1)
+    slope2 = f(x0 + h, y0 + h * slope1)
 
     def second_order(step):
-        slope2 = f(x0 + h * step, y0 + h * slope1 * step)
-        slope = (slope1 + slope2) / 2
-        return f(x0 + h * step, y0 + h * step * slope)
-        # Old method
-        # b = (step ** 2) / 2.0
-        # a = step - b
-        # slope = a * slope1 + b * slope2
-        # return f(x0 + h * step, y0 + h * step * slope)
+        b = (step ** 2) / 2.0
+        a = step - b
+        slope = a * slope1 + b * slope2
+        return f(x0 + h * step, y0 + h * slope)
 
     def third_order(step):
         sub_step = third_c * step
